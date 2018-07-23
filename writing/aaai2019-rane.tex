@@ -1,0 +1,94 @@
+%File: formatting-instruction.tex
+\documentclass[letterpaper]{article}
+\usepackage{aaai}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+\usepackage{adjustbox}
+\usepackage{color}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{multirow}
+\setcounter{tocdepth}{3}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{url}
+\usepackage{bm}
+\usepackage[english]{babel}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{paralist}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{paralist}
+\usepackage{mathtools}
+\usepackage[noend]{algpseudocode}
+\usepackage{colortbl}
+\definecolor{mygray}{gray}{.9}
+
+\newtheorem{definition}{Definition}
+\newtheorem{problem}{Problem}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\let\proof\relax
+\let\endproof\relax
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\pdfinfo{
+/Title Hierarchical Bayesian Personalized Recommendation: A Case Study and Beyond
+/Author Zhexuan Xu, Zitao Liu, Jincheng Wang, Yan Yan, Yongjun Bao, Weipeng Yan}
+\setcounter{secnumdepth}{0}  
+ \begin{document}
+% The file aaai.sty is the style file for AAAI Press 
+% proceedings, working notes, and technical reports.
+%
+\title{Hierarchical Bayesian Personalized Recommendation: A Case Study and Beyond}
+\author{Zhexuan Xu, Zitao Liu, Jincheng Wang, Yan Yan, Yongjun Bao, Weipeng Yan\\
+Intelligent Advertising Lab, JD.COM\\
+675 E Middlefiedl Rd.,\\
+Mountain View, CA, 94043\\
+}
+
+\maketitle
+\begin{abstract}
+\begin{quote}
+\input{abstract}
+\end{quote}
+\end{abstract}
+%\keywords{Network Embedding, Random Walk, Multi-dimensional Network}
+% \blfootnote{$^\star$Corresponding author}
+\section{Introduction}
+\label{sec:intro}
+\input{intro}
+
+\section{Related Work}
+\label{sec:related}
+\input{related}
+
+\section{The HBayes Framework}
+\label{sec:method}
+\input{method}
+
+\section{Experiment}
+\label{sec:experiment}
+\input{experiment}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\input{conclusion}
+
+% \balance
+\bibliographystyle{aaai}
+\bibliography{aaai2019}
+
+\end{document}
