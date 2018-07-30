@@ -62,47 +62,25 @@ POP+CID+TITLE+PROP & 0.0491 \\
 \label{tab:features_cmp}
 \end{table}
 
-\begin{figure*}[!htb]
-\includegraphics[width=0.7\linewidth]{fig/legend}
-\end{figure*}
-
-\begin{figure*}[!htb]
-\minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{fig/F1-score_jd}
-  \caption{F1@K on \emph{Apparel} data.}
-  \label{fig:perf_cmp_F1_apparel}
-\endminipage\hfill
-\minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{fig/precision_jd}
-  \caption{Precision@K on \emph{Apparel} data.}
-  \label{fig:perf_cmp_precision_apparel}
-\endminipage\hfill
-\minipage{0.32\textwidth}%
-  \includegraphics[width=\linewidth]{fig/recall_jd}
-  \caption{Recall@K on \emph{Apparel} data.}
+\begin{figure*}[htb]
+\includegraphics[width=0.47\linewidth]{fig/legend} \\
+\minipage{\columnwidth}
+  \includegraphics[width=0.32\linewidth]{fig/F1-score_jd}
+  \includegraphics[width=0.32\linewidth]{fig/precision_jd}
+  \includegraphics[width=0.32\linewidth]{fig/recall_jd}
+  \caption{\{F1, precision, recall\}@K on \emph{Apparel} data.}
   \label{fig:perf_cmp_recall_apparel}
-\endminipage
-\end{figure*}
-
-
-\begin{figure*}[!htb]
-\minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{fig/F1-score_music}
-  \caption{F1@K on \emph{Music} data.}
-  \label{fig:perf_cmp_F1_music}
-\endminipage\hfill
-\minipage{0.32\textwidth}
-  \includegraphics[width=\linewidth]{fig/precision_music}
-  \caption{Precision@K on \emph{Music} data.}
-  \label{fig:perf_cmp_precision_music}
-\endminipage\hfill
-\minipage{0.32\textwidth}%
-  \includegraphics[width=\linewidth]{fig/recall_music}
-  \caption{Recall@K on \emph{Music} data.}
+\endminipage\\
+\minipage{\columnwidth}
+  \includegraphics[width=0.32\linewidth]{fig/F1-score_music}
+  \includegraphics[width=0.32\linewidth]{fig/precision_music}
+  \includegraphics[width=0.32\linewidth]{fig/recall_music}
+  \caption{\{F1, precision, recall\}@K on \emph{Music} data.}
   \label{fig:perf_cmp_recall_music}
 \endminipage
 \end{figure*}
 
+%\begin{comment}
 \begin{figure}[!htb]
 \centering
 \minipage{0.49\columnwidth}
@@ -122,15 +100,13 @@ POP+CID+TITLE+PROP & 0.0491 \\
 \label{fig:train_time_cmp}
 \end{figure}
 
-%\begin{figure}[htb]
-%\includegraphics[width=0.9\columnwidth,height=0.5\columnwidth]{fig/Lik_time}
-%\caption{Training time under different feature combinations on e-commerce recommendations}
-%\label{fig:train_time_cmp}
-%\end{figure}
+%\end{comment}
+
+
 
 \begin{table}[htb]
 \begin{center}
-\scalebox{0.85}{
+\scalebox{0.7}{
 \begin{tabular}{l|cccc}
 \toprule
 \textbf{Method} & \textbf{NDCG@5} & \textbf{NDCG@10} & \textbf{NDCG@25} & \textbf{NDCG@50} \\
@@ -160,9 +136,9 @@ We first report the model performance regarding precision, recall, as well as F1
 Regarding the ranking quality, we use NDCG to report each method's performance in Table (\ref{NDCG_cmp}).  HBayes is superior against other baseline methods through out different K recommended.  Specially, HBayes beats the second best HPF at $\text{K}=5$ by $10.3\%$, at $\text{K}=10$ by $12.4\%$, at $\text{K}=25$ by $14.7\%$ and at $\text{K}=50$ by $11.2\%$.  
 
 \subsubsection{Model Learning Analysis}
-\begin{figure}
-\includegraphics[width=0.58\columnwidth,height=3cm]{fig/brand_tsne}
-\includegraphics[width=0.39\columnwidth,height=4cm]{fig/style-brand}
+\begin{figure}[htb]
+\includegraphics[width=0.68\columnwidth,height=3.5cm]{fig/brand_tsne}
+\includegraphics[width=0.29\columnwidth,height=3.5cm]{fig/style-brand}
 \caption{tSNE of four latent apparel style clusters}
 \label{fig:tsne-represntation-style-cluster}
 \end{figure}
@@ -173,13 +149,13 @@ Like mentioned in Section \ref{sec:method}, HBayes learns the latent style clust
 The second data set is collected from Last.fm dataset \cite{Celma:Springer2010} and Free Music Archive (FMA) \cite{FMA}. Last.fm is a publicly available dataset which contains the whole listening habits (till May, 5th 2009) for $\mathbf{1000}$ users. FMA is an open and easily accessible dataset providing $\mathbf{917}$ GiB and $\mathbf{343}$ days of Creative Commons-licensed audio from $\mathbf{106574}$ tracks, $\mathbf{16341}$ artists and $\mathbf{14854}$ albums, arranged in a hierarchical taxonomy of $\mathbf{161}$ genres. It also provides full-length and high-quality audios with precomputed features.  In our experiment, tracks in Last.fm dataset were further intersected with FMA dataset for better feature generation.  The resulting dataset contains $\mathbf{500}$ users, $\mathbf{16328}$ tracks and $\mathbf{36}$ genres.
 
 \subsubsection{Performance Comparison}
-We conduct similar experiments as we do for apparel dataset and report precisions, recalls as well as F1-scores in Figure (\ref{fig:perf_cmp_F1_music},\ref{fig:perf_cmp_precision_music},\ref{fig:perf_cmp_recall_music}).  Although HPF and HBayes share similar performance regarding recalls along with different K, HBayes is dominant for precisions at different K, especially when K is small (5, 10), which indicates HBayes is very efficient and precise for helping users pick up the songs they prefer even when the recommended item lists are short.   Combining the two, HBayes is superior in terms of F1-scores for different K recommended.  
+We conduct similar experiments as we do for apparel dataset and report precisions, recalls as well as F1-scores in Figure (\ref{fig:perf_cmp_recall_music}).  Although HPF and HBayes share similar performance regarding recalls along with different K, HBayes is dominant for precisions at different K, especially when K is small (5, 10), which indicates HBayes is very efficient and precise for helping users pick up the songs they prefer even when the recommended item lists are short.   Combining the two, HBayes is superior in terms of F1-scores for different K recommended.  
 
 For ranking qualities, we report the NDCG performance in Table (\ref{NDCG_cmp_music}).  Similar as e-commerce apparel data, HBayes is the best approach and HPF is the second best one throughout different K items recommended.  Specifically, HBayes beats HPF for $2.7\%$ at $\text{K}=5$, $4.3\%$ at $\text{K}=10$, $2.1\%$ at $\text{K}=25$, and $2.5\%$ at $\text{K}=50$ separately.
 
 \begin{table}[htb]
 \begin{center}
-\scalebox{0.85}{
+\scalebox{0.7}{
 \begin{tabular}{l|cccc}
 \toprule
 \textbf{Method} & \textbf{NDCG@5} & \textbf{NDCG@10} & \textbf{NDCG@25} & \textbf{NDCG@50} \\

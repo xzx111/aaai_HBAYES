@@ -35,7 +35,8 @@ In this work, in order to have the higher modeling flexibility and capacity, we 
 The family of probability distributions corresponding to this generative process is depicted as a graphical model in Figure \ref{fig:model}.
 
 \begin{figure}[htb]
-\includegraphics[width=0.8\linewidth]{fig/model}
+\centering
+\includegraphics[width=0.6\linewidth]{fig/model}
 \caption{A graphical model representation of HBayes.}
 \label{fig:model}
 \end{figure}
@@ -61,9 +62,10 @@ Dir(\bm{\theta}|\bm{\gamma})=\frac{\Gamma(\sum_{j=1}^{S}\gamma_j)}{\prod_{j=1}^{
 
 Furthermore, in Step 4 of the generative process of HBayes, a brand is modeled as a random mixture over latent styles. Hence, we model the brand parameters by a mixture of multivariate Gaussian distribution defined as follows:
 
-\begin{equation*}
-p(\bm{B}_i|\bm{z}_i,\bm{S},\delta_b) = \prod_{j}^S p(\bm{B}_i|\bm{S}_j,\delta_b)^{\mathbb{I}(z_{i,j}=1)} = \prod_{j}^S \mathcal{N}(\bm{B}_i; \bm{S}_j,\delta_b^{-1}\mathbf{I}) ^{\mathbb{I}(z_{i,j}=1)}
-\end{equation*}
+\begin{eqnarray*}
+p(\bm{B}_i|\bm{z}_i,\bm{S},\delta_b) = \prod_{j}^S p(\bm{B}_i|\bm{S}_j,\delta_b)^{\mathbb{I}(z_{i,j}=1)}\nonumber\\
+ = \prod_{j}^S \mathcal{N}(\bm{B}_i; \bm{S}_j,\delta_b^{-1}\mathbf{I}) ^{\mathbb{I}(z_{i,j}=1)}
+\end{eqnarray*}
 
 \noindent where $z_{i,j}$ is the \emph{j}th element of $\mathbf{z}_i$ and $\mathbb{I}(\xi)$ is an indicator function that $\mathbb{I}(\xi)=1$ if the statement $\xi$ is true; $\mathbb{I}(\xi)=0$ otherwise.
 
@@ -139,7 +141,7 @@ By using the sigmoid approximation in eq.(\ref{eq:likelihood_approx}), our varia
 
 \begin{equation}
 \label{eq:approx_variational_energy}
-\mathcal{Q}'(q) \geq \mathcal{Q}'_{\xi}(q) = \int_\Theta \sum_{\bm{Z}} q(\bm{Z},\Theta) \log\frac{p_{\xi}(\mathcal{D},\bm{Z},\Theta)}{q(\bm{Z},\Theta)}d\Theta
+\hskip -1cm \mathcal{Q}'(q) \geq \mathcal{Q}'_{\xi}(q) = \int_\Theta \sum_{\bm{Z}} q(\bm{Z},\Theta) \log\frac{p_{\xi}(\mathcal{D},\bm{Z},\Theta)}{q(\bm{Z},\Theta)}d\Theta
 \end{equation}
 
 In the following, we will maximize the lower bound of the variational free energy $\mathcal{Q}_{\xi}'(q) $ for parameter estimation.
@@ -150,17 +152,17 @@ In the following, we will maximize the lower bound of the variational free energ
 We develop a Variational Bayes (VB) algorithm for HBayes parameter estimation, where in the E-step, we compute the expectation of the hidden variables $\mathbf{Z}$ and in the M-step, we try to find $\Theta$ that maximizes lower bound of the variational free energy $\mathcal{Q}_{\xi}'(q)$ (eq.(\ref{eq:approx_variational_energy})). In the VB algorithm, we use coordinate ascent variational inference (CAVI) \cite{bishop2006pattern} to optimize $\mathcal{Q}_{\xi}'(q)$. CAVI iteratively optimizes each factor of the mean field variational distribution, while holding the others fixed.
 
 \noindent \textbf{update expectation of $Z$}:
-We assume each brand's style membership latent variable is independent and therefore, $q(\mathbf{Z}) = \prod_{i=1}^B q(\mathbf{z}_i)$. For each $\mathbf{z}_i$, we parameterize $q(\mathbf{z}_i)$ as a multinomial distribution, i.e.,
+We assume each brand's style membership latent variable is independent and therefore, $q(\mathbf{Z}) = \prod_{i=1}^B q(\mathbf{z}_i)$. For each $\mathbf{z}_i$, we parameterize $q(\mathbf{z}_i)$ and update $\mu_{i,j}$ based on the multinomial distribution:
 
-$$q(\mathbf{z}_i) = \prod_{j=1}^S \mu_{i,j}^{\mathbb{I}(z_{i,j}=1)}$$
+$$q(\mathbf{z}_i) = \prod_{j=1}^S \mu_{i,j}^{\mathbb{I}(z_{i,j}=1)}; ~~~~\mu_{i,j} =  \frac{\rho_{i,j}}{\sum_{p=1}^S\rho_{i,p}}$$
 
-and the update rule for $\mu_{i,j}$ is  
+%and the update rule for $\mu_{i,j}$ is  
 
+%\begin{align}
+%\mu_{i,j} =  \frac{\rho_{i,j}}{\sum_{p=1}^S\rho_{i,p}} 
+%\end{align}
 \begin{align}
-\mu_{i,j} =  \frac{\rho_{i,j}}{\sum_{p=1}^S\rho_{i,p}} 
-\end{align}
-\begin{align}
-\ln(\rho_{i,j}) =  \mathbb{E}[\ln(\bm{\theta}_j)]+\frac{d}{2}\mathbb{E}[\ln(\delta_b)]-\frac{d}{2}\ln(2\pi) 
+\ln(\rho_{i,j}) =  \mathbb{E}[\ln(\bm{\theta}_j)]+\frac{d}{2}\mathbb{E}[\ln(\delta_b)]-\frac{d}{2}\ln(2\pi) \nonumber \\
  -\frac{1}{2}\mathbb{E}\big[\delta_b(\mathbf{B}_i-\mathbf{S}_j)^\mathrm{T}(\mathbf{B}_i-\mathbf{S}_j)\big]
 \end{align}
 
@@ -184,8 +186,8 @@ For the style proportion distribution $\mathbf{\theta}$, we parameterize $q(\mat
 For each user $k$, $k = 1, \cdots, U$, we parameterize $q(\mathbf{U}_k)$ as a multivariate normal distribution, i.e., $q(\mathbf{U}_k) = \mathcal{N}(\mathbf{U}_k; \bm{\mu}^u_k, \bm{\Sigma}_k^u)$, and the update rule for $\bm{\mu}^u_k$, $\bm{\Sigma}_k^u$ are 
 
 \begin{align}
-\bm{\Sigma}_k^u & = \big[  \delta_u \mathbf{I} + \sum_{t=1}^N \mathbb{I}(u_t = k) 2\lambda_t \mathbf{X}_t \mathbf{X}_t^T  \big]^{-1} \\ 
-\bm{\mu}^u_k & = \bm{\Sigma}_k^u\Big[  \sum_{t=1}^N\mathbb{I}(u_t=k)  \big(y_t-\frac{1}{2}-2\lambda_{t}\mathbf{X}_t^T\mathbb{E}[\mathbf{B}_{b_t}]\big)\mathbf{X}_t \Big]
+\bm{\Sigma}_k^u = \big[  \delta_u \mathbf{I} + \sum_{t=1}^N \mathbb{I}(u_t = k) 2\lambda_t \mathbf{X}_t \mathbf{X}_t^T  \big]^{-1} ~~~~~~~~~~~\\ 
+\hskip -0.5cm \bm{\mu}^u_k = \bm{\Sigma}_k^u\Big[  \sum_{t=1}^N\mathbb{I}(u_t=k)  \big(y_t-\frac{1}{2}-2\lambda_{t}\mathbf{X}_t^T\mathbb{E}[\mathbf{B}_{b_t}]\big)\mathbf{X}_t \Big]
 \end{align}
 
 \noindent \textbf{Parametrization and update rule of $q(\mathbf{B}_i)$}:
@@ -193,8 +195,8 @@ For each brand $i$, $i = 1, \cdots, B$, we parameterize $q(\mathbf{B}_i)$ as a m
 
 \begin{align}
 \bm{\Sigma}^b_i & = \Big[\delta_b\sum_{j=1}^S\mu_{i,j}\mathbf{I}+\sum_{t=1}^N\mathbb{I}(b_t=i)2\lambda_{t}\mathbf{X}_t\mathbf{X}_t^T\Big]^{-1} \\ 
-\bm{\mu}^b_i & = \bm{\Sigma}_i^b\Big[  \delta_b\sum_{j=1}^S\mu_{i,j}\mathbb{E}[\mathbf{S}_j]+ 
- \sum_{t=1}^N\mathbb{I}(b_t=i)\big(y_t-\frac{1}{2}- 2\lambda_{t}\mathbf{X}_t^T\mathbb{E}[\mathbf{U}_{u_t}]\big)\bm{X}_t \Big]
+\bm{\mu}^b_i & = \bm{\Sigma}_i^b\Big[  \delta_b\sum_{j=1}^S\mu_{i,j}\mathbb{E}[\mathbf{S}_j] \nonumber \\
+& + \sum_{t=1}^N\mathbb{I}(b_t=i)\big(y_t-\frac{1}{2}- 2\lambda_{t}\mathbf{X}_t^T\mathbb{E}[\mathbf{U}_{u_t}]\big)\bm{X}_t \Big]
 \end{align}
 
 
@@ -211,8 +213,7 @@ For each style $j$, $j = 1, \cdots, S$, we parameterize $q(\mathbf{S}_j)$ as a m
 For the mean variable of style prior $\mathbf{w}$, we parameterize $q(\mathbf{w})$ as a multivariate normal distribution, i.e., $q(\mathbf{w}) = \mathcal{N}(\mathbf{w}; \bm{\mu}^w, \bm{\Sigma}^w)$, and the update rule for $\bm{\mu}^w$, $\bm{\Sigma}^w$ are 
 
 \begin{align}
-\bm{\Sigma}^w & = \big[\delta_w+\delta_s\cdot S\big]^{-1}\mathbf{I}\\ 
-\bm{\mu}^w & = \bm{\Sigma}^w\Big[ \delta_s\sum_{j=1}^S\mathbb{E}[\mathbf{S}_j] \Big]
+\bm{\Sigma}^w  = \big[\delta_w+\delta_s\cdot S\big]^{-1}\mathbf{I};~~~\bm{\mu}^w = \bm{\Sigma}^w\Big[ \delta_s\sum_{j=1}^S\mathbb{E}[\mathbf{S}_j] \Big]
 \end{align}
 
 
@@ -250,7 +251,7 @@ The parameter estimation method for the HBayes is summarized by Algorithm \ref{a
 \Procedure{Learning HBayes}{}
 \Repeat
 \State E-step: compute expectation of $\mathbf{Z}$ by eq.(\ref{eq:hidden}).
-\State M-step: estimate $\{\bm{U}_k\}, \{\bm{B}_i\}, \{\bm{S}_j\}, \bm{w}, \boldsymbol{\theta}, \delta_u,\delta_b,\delta_s,\delta_w，\xi_{t}$ by eq.(\ref{eq:start}) - eq.(\ref{eq:end}).
+\State M-step: estimate $\{\bm{U}_k\}, \{\bm{B}_i\}, \{\bm{S}_j\}, \bm{w}, \boldsymbol{\theta}, \delta_u,\delta_b,\delta_s,\delta_w,\xi_{t}$ by eq.(\ref{eq:start}) - eq.(\ref{eq:end}).
 \Until{Convergence}
 \State
 \Return $\Theta$
