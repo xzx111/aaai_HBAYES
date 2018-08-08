@@ -8,22 +8,20 @@ In this section, we conduct several experiments on two data sets: (1) our case s
 \textbf{LambdaMART} \cite{burges2010ranknet} is the boosted tree version of LambdaRank \cite{donmez2009local}, which is based on RankNet \cite{burges2005learning}.  LambdaMART proves to be a very successful approach for ranking as well as recommendation.  %We include LambdaMART as another baseline. \newline}
 
 \subsection{Evaluation Metrics}
-Throughout the experiments, we compare HBayes against other baselines on the testing held-out dataset under the 5-fold cross-validation settings.  For each fold, after fitting the model on the training set, we rank on the testing set by each model, and generate the top K samples with maximal ranking scores for recommendation.  Regarding metrics, we adopt precisions, recalls as well as F1-scores for evaluating the item retrieval quality and normalized discounted information gain (NDCG) for evaluating the recommendation ranking quality.  More specifically, each metric mentioned is defined as:
+Throughout the experiments, we compare HBayes against other baselines on the testing held-out dataset under the 5-fold cross-validation settings.  For each fold, after fitting the model on the training set, we rank on the testing set by each model, and generate the top K samples with maximal ranking scores for recommendation.  Regarding metrics, we adopt the \textbf{precision}, \textbf{recall} as well as \textbf{f1-score} for evaluating the retrieval quality and normalized discounted information gain (NDCG) for evaluating the recommendation ranking quality which is defined as:  %More specifically, each metric mentioned is defined as:
 
+%\begin{eqnarray}
+%\text{Precision@K} & = & \frac{\text{\# of products clicked in top K}}{\text{K}} \nonumber \\
+%\text{Recall@K}      & = & \frac{\text{\# of products clicked in top K}}{\text{\# of products the user clicked}} \nonumber \\
+%\text{F1-score@K} & = & 2\cdot\frac{\text{Precision@K} \cdot \text{Recall@K}}{\text{Precision@K} + \text{Recall@K}}  \nonumber
+%\end{eqnarray}
+
+%Discounted cumulative gain (DCG) measures the ranking quality based on the item positions from the resulting list, which is defined as:
 \begin{eqnarray}
-\text{Precision@K} & = & \frac{\text{\# of products clicked in top K}}{\text{K}} \nonumber \\
-\text{Recall@K}      & = & \frac{\text{\# of products clicked in top K}}{\text{\# of products the user clicked}} \nonumber \\
-\text{F1-score@K} & = & 2\cdot\frac{\text{Precision@K} \cdot \text{Recall@K}}{\text{Precision@K} + \text{Recall@K}}  \nonumber
-\end{eqnarray}
-
-discounted cumulative gain (DCG) measures the ranking quality based on the item positions from the resulting list, which is defined as:
-\begin{eqnarray}
-\text{DCG@K} & = & \sum_{i=1}^K\frac{r_i}{\log_2(i+1)} =  r_1 + \sum_{i=2}^K\frac{r_i}{\log_2(i+1)}\nonumber
-\end{eqnarray}
-
-re-rank all potential products to produce the ideal maximal possible DCG through out first K items, and its corresponding DCG score is called the ideal discounted cumulative gain (IDCG).  By using both DCG and IDCG, the normalized discounted cumulative gain (NDCG) is defined as:
-
-\begin{eqnarray}
+\text{DCG@K} & = & \sum_{i=1}^K\frac{r_i}{\log_2(i+1)} =  r_1 + \sum_{i=2}^K\frac{r_i}{\log_2(i+1)}\nonumber \\
+%\end{eqnarray}
+%re-rank all potential products to produce the ideal maximal possible DCG through out first K items, and its corresponding DCG score is called the ideal discounted cumulative gain (IDCG).  By using both DCG and IDCG, the normalized discounted cumulative gain (NDCG) is defined as:
+%\begin{eqnarray}
 \text{NDCG@K} & = & \frac{\text{DCG@K}}{\text{IDCG@K}}\nonumber
 \end{eqnarray}
 
@@ -62,25 +60,25 @@ POP+CID+TITLE+PROP & 0.0491 \\
 \label{tab:features_cmp}
 \end{table}
 
-\begin{figure*}[htb]
-\includegraphics[width=0.47\linewidth]{fig/legend} \\
+\begin{figure}[htb]
 \minipage{\columnwidth}
+  \includegraphics[width=0.94\linewidth]{fig/legend} \\
   \includegraphics[width=0.32\linewidth]{fig/F1-score_jd}
   \includegraphics[width=0.32\linewidth]{fig/precision_jd}
   \includegraphics[width=0.32\linewidth]{fig/recall_jd}
-  \caption{\{F1, precision, recall\}@K on \emph{Apparel} data.}
-  \label{fig:perf_cmp_recall_apparel}
+  %\caption{\{F1, precision, recall\}@K on \emph{Apparel} data.}
+  %\label{fig:perf_cmp_recall_apparel}
 \endminipage\\
 \minipage{\columnwidth}
   \includegraphics[width=0.32\linewidth]{fig/F1-score_music}
   \includegraphics[width=0.32\linewidth]{fig/precision_music}
   \includegraphics[width=0.32\linewidth]{fig/recall_music}
-  \caption{\{F1, precision, recall\}@K on \emph{Music} data.}
+  \caption{F1 (L), precision (M), recall (R) on \emph{Apparel} (top) \& \emph{Music} (bot) data.}
   \label{fig:perf_cmp_recall_music}
 \endminipage
-\end{figure*}
+\end{figure}
 
-%\begin{comment}
+\begin{comment}
 \begin{figure}[!htb]
 \centering
 \minipage{0.49\columnwidth}
@@ -99,10 +97,7 @@ POP+CID+TITLE+PROP & 0.0491 \\
 \caption{Training time under different feature combinations on e-commerce recommendations}
 \label{fig:train_time_cmp}
 \end{figure}
-
-%\end{comment}
-
-
+\end{comment}
 
 \begin{table}[htb]
 \begin{center}
@@ -136,22 +131,17 @@ We first report the model performance regarding precision, recall, as well as F1
 Regarding the ranking quality, we use NDCG to report each method's performance in Table (\ref{NDCG_cmp}).  HBayes is superior against other baseline methods through out different K recommended.  Specially, HBayes beats the second best HPF at $\text{K}=5$ by $10.3\%$, at $\text{K}=10$ by $12.4\%$, at $\text{K}=25$ by $14.7\%$ and at $\text{K}=50$ by $11.2\%$.  
 
 \subsubsection{Model Learning Analysis}
-\begin{figure}[htb]
-\includegraphics[width=0.68\columnwidth,height=3.5cm]{fig/brand_tsne}
-\includegraphics[width=0.29\columnwidth,height=3.5cm]{fig/style-brand}
-\caption{tSNE of four latent apparel style clusters}
-\label{fig:tsne-represntation-style-cluster}
-\end{figure}
-
 Like mentioned in Section \ref{sec:method}, HBayes learns the latent style clusters, and group different brands of products based on their different hidden style representations.  Figure (\ref{fig:tsne-represntation-style-cluster}) shows the tSNE \cite{maaten2008visualizing} representations of different apparel clusters learned by HBayes and we randomly pick $4$ samples out of each cluster and display each product image at the right subfigure.  As shown, cluster one which takes the majority proportion of apparel items seems about stylish female youth garment.  This intuitively makes sense because the majority of apparel customers are young females for e-commerce websites; as a result, most apparels are focusing on the young female audience as well.    The second cluster seems about senior customers who are elder in age.   Interestingly, the third cluster and the fourth cluster that are closely tied up are both about young male customers.  However, the third cluster seems focusing more on office business garment while the fourth cluster seems more about Korean-pop street styles.  This indicates us that the HBayes indeed learns the meaningful intrinsic garment styles from apparel items by leveraging customer behavior data.   
 
 \subsection{Recommendation on Last.fm Music Data}
 The second data set is collected from Last.fm dataset \cite{Celma:Springer2010} and Free Music Archive (FMA) \cite{FMA}. Last.fm is a publicly available dataset which contains the whole listening habits (till May, 5th 2009) for $\mathbf{1000}$ users. FMA is an open and easily accessible dataset providing $\mathbf{917}$ GiB and $\mathbf{343}$ days of Creative Commons-licensed audio from $\mathbf{106574}$ tracks, $\mathbf{16341}$ artists and $\mathbf{14854}$ albums, arranged in a hierarchical taxonomy of $\mathbf{161}$ genres. It also provides full-length and high-quality audios with precomputed features.  In our experiment, tracks in Last.fm dataset were further intersected with FMA dataset for better feature generation.  The resulting dataset contains $\mathbf{500}$ users, $\mathbf{16328}$ tracks and $\mathbf{36}$ genres.
 
-\subsubsection{Performance Comparison}
-We conduct similar experiments as we do for apparel dataset and report precisions, recalls as well as F1-scores in Figure (\ref{fig:perf_cmp_recall_music}).  Although HPF and HBayes share similar performance regarding recalls along with different K, HBayes is dominant for precisions at different K, especially when K is small (5, 10), which indicates HBayes is very efficient and precise for helping users pick up the songs they prefer even when the recommended item lists are short.   Combining the two, HBayes is superior in terms of F1-scores for different K recommended.  
-
-For ranking qualities, we report the NDCG performance in Table (\ref{NDCG_cmp_music}).  Similar as e-commerce apparel data, HBayes is the best approach and HPF is the second best one throughout different K items recommended.  Specifically, HBayes beats HPF for $2.7\%$ at $\text{K}=5$, $4.3\%$ at $\text{K}=10$, $2.1\%$ at $\text{K}=25$, and $2.5\%$ at $\text{K}=50$ separately.
+\begin{figure}[htb]
+\includegraphics[width=0.68\columnwidth,height=3.3cm]{fig/brand_tsne}
+\includegraphics[width=0.29\columnwidth,height=3.3cm]{fig/style-brand}
+\caption{tSNE of four latent apparel style clusters}
+\label{fig:tsne-represntation-style-cluster}
+\end{figure}
 
 \begin{table}[htb]
 \begin{center}
@@ -178,6 +168,13 @@ HBayes & \textbf{0.2655} & \textbf{0.2620} & \textbf{0.2455} & \textbf{0.2537}\\
 \label{NDCG_cmp_music}
 \end{center}
 \end{table}
+
+\subsubsection{Performance Comparison}
+We conduct similar experiments as we do for apparel dataset and report precisions, recalls as well as F1-scores in Figure (\ref{fig:perf_cmp_recall_music}).  Although HPF and HBayes share similar performance regarding recalls along with different K, HBayes is dominant for precisions at different K, especially when K is small (5, 10), which indicates HBayes is very efficient and precise for helping users pick up the songs they prefer even when the recommended item lists are short.   Combining the two, HBayes is superior in terms of F1-scores for different K recommended.  
+
+For ranking qualities, we report the NDCG performance in Table (\ref{NDCG_cmp_music}).  Similar as e-commerce apparel data, HBayes is the best approach and HPF is the second best one throughout different K items recommended.  Specifically, HBayes beats HPF for $2.7\%$ at $\text{K}=5$, $4.3\%$ at $\text{K}=10$, $2.1\%$ at $\text{K}=25$, and $2.5\%$ at $\text{K}=50$ separately.
+
+
 
 %For PR-AUC, HBayes (0.055) again beats against the second best, which is LambdaMART (0.043) by $27.9\%$.  In terms of F1-score, HBayes in average beats against LambdaMART by $14.0\%$.  Regarding with the ranking quality, HBayes beats against the second best, which is NMF  for $M=5,10,25$ by $4.20\%$ in average and SVD++ for $M=50$ by $4.02\%$.  
 

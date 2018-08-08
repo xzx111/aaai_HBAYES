@@ -1,36 +1,38 @@
-In this work, we develop our generalized hierarchical Bayesian modeling framework that is able to capture the hierarchical structural relations and latent relations in the real-world recommendation scenarios. In our framework, we incorporate both user specific features and user events into model learning so that more personalized recommendation results can be achieved. Furthermore, we present a variational inference algorithm for the HBayes framework to provide fast parameter estimation.
+In this work, we develop our generalized hierarchical Bayesian modeling framework that is able to capture the hierarchical structural relations and latent relations in the real-world recommendation scenarios.  Note that we take apparel recommendation as a case study for the ease of model description, but our model framework is general enough to be enforced to other hierarchical data recommendation cases.
 
-In the following, we will describe how HBayes works by using apparel recommendation as an illustrative example. Using a real-world example helps explain the latent variables, hierarchy structural relations, and the conditional independence assumptions implied in HBayes. Please note that even we explain HBayes in apparel recommendation, the framework itself can be generalized into other recommendation scenarios with little modification. 
+In the following, we will describe HBayes in greater detail by explaining the latent variables, hierarchy structural relations, and the conditional independence assumptions implied.  Furthermore, we present a variational inference algorithm for the HBayes framework to provide fast parameter estimation.  
 
-
+%In general HBayes could achieve more personalized recommendation results.
+%In our framework, we incorporate both user specific features and user events into model learning 
+%Please note that even we explain HBayes in apparel recommendation, the framework itself can be generalized into other recommendation scenarios with little modification. 
 
 \subsection{Generative Process}
 
-In the real-world scenario, each item or product has to come with a brand and a brand may have more than one items in the hierarchical structures. Therefore, we denote each event $t$ as a 4-tuple (Item, Brand, User, IsClick), i.e, ($\mathbf{X}_t, b_t, u_t, y_t$). $\mathbf{X}_t$ represents the item features associated with event $t$ and $y_t$ is the binary label that indicates whether user $u_t$ has clicked $\mathbf{X}_t$ or not. $b_t$ is the brand of item $\mathbf{X}_t$. 
+In the real-world scenario, each item or product has to come with a brand and a brand may have more than one items in the hierarchical structures. Therefore, we denote each event $t$ as a 4-tuple (\emph{Item}, \emph{Brand}, \emph{User}, \emph{IsClick}), i.e, ($\mathbf{X}_t, b_t, u_t, y_t$). $\mathbf{X}_t$ represents the item features associated with event $t$ and $y_t$ is the binary label that indicates whether user $u_t$ has clicked $\mathbf{X}_t$ or not. $b_t$ is the brand of item $\mathbf{X}_t$. 
 
 Furthermore, we expand the hierarchy by a hidden factor, i.e., ``style''. Products from each brand $b_t$ tend to exhibit different styles or tastes, which are unknown but exist. In this paper, brands are represented as random mixtures over latent styles, where each style is characterized by a distribution over all the items. Let $S$, $B$, $U$ and $N$ be the total number of styles, brands, users and events.
 
 The generative process of HBayes can be described as follows:
 
 \begin{enumerate}
-\item[Step 1.] Draw a multivariate Gaussian prior for each user $k$, i.e, $\mathbf{U}_k \sim \mathcal{N}(\mathbf{0}, \delta_u^{-1}\mathbf{I})$ where $k \in \{1, \cdots, U\}$.
+\item[\textbf{Step 1.}] Draw a multivariate Gaussian prior for each user $k$, i.e, $\mathbf{U}_k \sim \mathcal{N}(\mathbf{0}, \delta_u^{-1}\mathbf{I})$ where $k \in \{1, \cdots, U\}$.
 
-\item[Step 2.] Draw a multivariate Gaussian prior for each style $j$, i.e, $\mathbf{S}_j \sim \mathcal{N}(\mathbf{w}, \delta_s^{-1}\mathbf{I})$ where $j \in \{1, \cdots, S\}$.
+\item[\textbf{Step 2.}] Draw a multivariate Gaussian prior for each style $j$, i.e, $\mathbf{S}_j \sim \mathcal{N}(\mathbf{w}, \delta_s^{-1}\mathbf{I})$ where $j \in \{1, \cdots, S\}$.
 
-\item[Step 3.] Draw a style proportion distribution $\boldsymbol{\theta}$ for each brand $i$, $\boldsymbol{\theta} \sim \mbox{Dir}(\boldsymbol{\gamma})$  where $i \in \{1, \cdots, B\}$.
+\item[\textbf{Step 3.}] Draw a style proportion distribution $\boldsymbol{\theta}$ for each brand $i$, $\boldsymbol{\theta} \sim \mbox{Dir}(\boldsymbol{\gamma})$  where $i \in \{1, \cdots, B\}$.
 
-\item[Step 4.] For each brand $i$:
+\item[\textbf{Step 4.}] For each brand $i$:
 	\begin{enumerate}
-		\item[Step 4.1] Draw style assignment $\mathbf{z}_i$ for brand $i$ where the selected style $p$ is sampled from $\mbox{Mult}(\boldsymbol{\theta})$. $\mathbf{z}_i$ is a $S\times1$ one hot encoding vector that $z_{i,p} = 1$ and $z_{i,j} = 0$ for $j = 1, \cdots, p-1, p+1, \cdots, S$.
-		\item[Step 4.2] Draw $\mathbf{B}_i \sim \mathcal{N}(\mathbf{S}_{p}, \delta_b^{-1}\mathbf{I})$.
+		\item[\textbf{Step 4.1}] Draw style assignment $\mathbf{z}_i$ for brand $i$ where the selected style $p$ is sampled from $\mbox{Mult}(\boldsymbol{\theta})$. $\mathbf{z}_i$ is a $S\times1$ one hot encoding vector that $z_{i,p} = 1$ and $z_{i,j} = 0$ for $j = 1, \cdots, p-1, p+1, \cdots, S$.
+		\item[\textbf{Step 4.2}] Draw $\mathbf{B}_i \sim \mathcal{N}(\mathbf{S}_{p}, \delta_b^{-1}\mathbf{I})$.
 	\end{enumerate}
 
-\item[Step 5.] For each event $t$, draw $y_t$ from Bernoulli distribution where the probability $p$ is defined as $p(y_t|\mathbf{x}_t, \mathbf{B}_{b_t}, \mathbf{U}_{u_t})$.
+\item[\textbf{Step 5.}] For each event $t$, draw $y_t$ from Bernoulli distribution where the probability $p$ is defined as $p(y_t|\mathbf{x}_t, \mathbf{B}_{b_t}, \mathbf{U}_{u_t})$.
 \end{enumerate}
 
-\noindent where $\delta_s$, $\delta_u$ and $\delta_b$ are the scalar precision parameters and $\mathbf{w}$ is the prior mean of $\mathbf{S}_j$. $\mbox{Dir}(\cdot)$ and  $\mbox{Mult}(\cdot)$ represent Dirichlet distribution and multinomial distribution, respectively. 
+\noindent where $\delta_s$, $\delta_u$ and $\delta_b$ are the scalar precision parameters and $\mathbf{w}$ is the prior mean of $\mathbf{S}_j$. $Dir(\cdot)$ and  $Mult(\cdot)$ represent Dirichlet distribution and multinomial distribution, respectively. 
 
-In this work, in order to have the higher modeling flexibility and capacity, we also treat each distribution's parameter as a random variable and define hyper-priors over them. More specifically, We draw the prior mean $\mathbf{w}$ from $\mathcal{N}(\mathbf{0}, \delta_w^{-1}\mathbf{I})$. For $\delta_w$, $\delta_s$, $\delta_u$ and $\delta_b$, we define Gamma priors over them i.e.,  $p(\delta_*) = \mathcal{G}(\alpha, \beta)$, where $\delta_* \in \{ \delta_w, \delta_s, \delta_u, \delta_b \}$. 
+With consideration of model flexibility and capacity, we also treat each distribution's parameter as a random variable and define hyper-priors on top. More specifically, We draw the prior mean $\mathbf{w}$ from $\mathcal{N}(\mathbf{0}, \delta_w^{-1}\mathbf{I})$. For $\delta_w$, $\delta_s$, $\delta_u$ and $\delta_b$, we define Gamma priors over them i.e.,  $p(\delta_*) = \mathcal{G}(\alpha, \beta)$, where $\delta_* \in \{ \delta_w, \delta_s, \delta_u, \delta_b \}$. 
 
 The family of probability distributions corresponding to this generative process is depicted as a graphical model in Figure \ref{fig:model}.
 
@@ -47,7 +49,7 @@ In this work, we model the probability of a single event $t$ given ($\mathbf{X}_
 
 \begin{equation}
 \label{eq:sigmoid_prob}
-p\big(y_t|\bm{X}_t,\bm{B}_{b_t},\bm{U}_{u_t} \big)= \Big[\sigma\big(h_t\big)\Big]^{y_t} \cdot \Big[1-\sigma\big(h_t\big)\Big]^{1-y_t}
+p\big(y_t|\bm{X}_t,\bm{B}_{b_t},\bm{U}_{u_t} \big)= \sigma^{y_t}\big(h_t\big) \cdot \big(1-\sigma\big(h_t\big)\big)^{1-y_t}
 \end{equation}
 
 \noindent where $\sigma(\cdot)$ is a logistic function, i.e. $\sigma(x)=(1+e^{-x})^{-1}$. $h_{t}=\bm{X}_t^T(\bm{B}_{b_t}+\bm{U}_{u_t})$. $\mathbf{X}^T$ is the vector transpose of $\mathbf{X}$. $\bm{U}_{u_t}$ represents user specific information encoded in HBayes for user $u_t$ and $\bm{B}_{b_t}$ denotes the brand $b_t$'s specific information.
@@ -91,14 +93,14 @@ We use $\Theta$ to denote all model parameters:
 
 \subsection{Optimization}
 
-Since both $\mathbf{Z}$ and $\Theta$ defined by the HBayes are unobserved, we cannot learn our HBayes directly. Instead, we infer the expectations of these latent variables and compute the expected log likelihood of the log joint probability with respect to the latent variables distribution, i.e., $\mathcal{Q}$ function defined in eq.(\ref{eq:original_q}). In the following, we omit the explicit conditioning on $\mathcal{H}$ for notational brevity. 
+Since both $\mathbf{Z}$ and $\Theta$ defined by HBayes are unobserved, we cannot learn HBayes directly. Instead, we infer the expectations of these latent variables and compute the expected log likelihood of the log joint probability with respect to the latent variables distribution, i.e., $\mathcal{Q}$ function defined in eq.(\ref{eq:original_q}). In the following, we omit the explicit conditioning on $\mathcal{H}$ for notational brevity. 
 
 \begin{equation}
 \label{eq:original_q}
 \mathcal{Q} = \int_\Theta \sum_{\bm{Z}} p(\bm{Z}, \Theta| \mathcal{D})  \log \big( p(\mathcal{D},\bm{Z},\Theta) \big) d\Theta
 \end{equation}
 
-From the Bayes rule, we can see that the posteriors distribution of $\mathbf{Z}$ and $\Theta$ can be represented by $p(\bm{Z},\Theta|\mathcal{D}) = \frac{p(\mathcal{D},\bm{Z},\Theta)}{p(\mathcal{D})}$. However, this above distribution is intractable to compute in general \cite{dickey1983multiple}. To tackle this problem, a wide variety of approximate inference algorithms are developed, such as Laplace approximation \cite{rue2009approximate}, variational approximation \cite{bishop2006pattern}, and Markov Chain Monte Carlo (MCMC) approach \cite{blei2003latent}, etc.
+From the Bayes rule, the posteriors distribution of $\mathbf{Z}$ and $\Theta$ can be represented by $p(\bm{Z},\Theta|\mathcal{D}) = \frac{p(\mathcal{D},\bm{Z},\Theta)}{p(\mathcal{D})}$. However, this above distribution is intractable to compute in general \cite{dickey1983multiple}. To tackle this problem, a wide variety of approximation inference algorithms are developed, such as Laplace approximation \cite{rue2009approximate}, variational approximation \cite{bishop2006pattern}, and Markov Chain Monte Carlo (MCMC) approach \cite{blei2003latent}, etc.
 
 In this work, we choose to solve this problem by using variational Bayes approximation \cite{bishop2006pattern}. More specifically, we approximate the original posterior distribution $p(\bm{Z}, \Theta| \mathcal{D})$ with a tractable distribution $q(\bm{Z}, \Theta)$ such that instead of maximizing the $\mathcal{Q}$ function defined in eq.(\ref{eq:original_q}), we maximize the variational free energy defined as 
 
@@ -133,7 +135,7 @@ Therefore, each event likelihood can be expressed as follows:
 
 \begin{align}
 \label{eq:likelihood_approx}
-& \big[\sigma(h_t)\big]^{y_t} \cdot  \big[1-\sigma(h_t) \big]^{1-y_t} = \exp\big( y_t h_t \big) \sigma(-h_t) \nonumber \\
+& \sigma^{y_t}(h_t) \cdot  \big(1-\sigma(h_t) \big)^{1-y_t} = \exp\big( y_t h_t \big) \sigma(-h_t) \nonumber \\
 \geq & \sigma(\xi_t)\exp \big(y_t h_t-\frac{1}{2}(h_t+\xi_t)-\lambda_t(h_t^2-\xi_t^2) \big)
 \end{align}
 
@@ -219,13 +221,13 @@ For the mean variable of style prior $\mathbf{w}$, we parameterize $q(\mathbf{w}
 
 
 \noindent \textbf{Parametrization and update rule of $q(\delta_u)$, $q(\delta_b)$, $q(\delta_s)$ and $q(\delta_w)$}:
-For all the precision parameters' distributions, we parameterize them as a Gamma distribution, i.e., $p(\delta_*) = \mathcal{G}(\delta_*; \alpha_*, \beta_* )$, where $\delta_* \in \{ \delta_w, \delta_s, \delta_u, \delta_b \}$ and the update rule for $\alpha$ and $\beta$ are 
+For all the precision parameters' distributions, we parameterize them as a Gamma distribution, i.e., $p(\delta_*) = \mathcal{G}(\delta_*; \alpha_*, \beta_* )$, where $\delta_* \in \{ \delta_w, \delta_s, \delta_u, \delta_b \}$ and the update rule for are $\alpha_\mathrm{new} = \alpha_\mathrm{old} + \Delta \alpha$ and $\beta_\mathrm{new} = \beta_\mathrm{old} + \Delta \beta$, separately:
 
 \begin{align}
-\alpha_u & = \alpha + \frac{dU}{2},\quad  \beta=\beta+\frac{1}{2}\sum_{k=1}^{U}\mathbb{E}\big[\mathbf{U}_k^T\mathbf{U}_k\big] \\ 
-\alpha_b & = \alpha + \frac{dB}{2},\quad  \beta=\beta+\frac{1}{2}\sum_{i=1}^{B}\sum_{j=1}^{S}\mu_{i,j}\mathbb{E}\big[(\mathbf{B}_i-\mathbf{S}_j)^T(\mathbf{B}_i-\mathbf{S}_j)\big] \\
-\alpha_s & = \alpha + \frac{dS}{2},\quad  \beta=\beta+\frac{1}{2}\sum_{j=1}^{S}\mathbb{E}\big[(\mathbf{S}_j-\mathbf{w})^T(\mathbf{S}_j-\mathbf{w})\big] \\
-\alpha_w & = \alpha + \frac{d}{2},\quad  \beta=\beta+\frac{1}{2}\mathbb{E}\big[\mathbf{w}^T\mathbf{w}\big] 
+\Delta\alpha_u &= \frac{dU}{2},~  \Delta\beta_u=\frac{1}{2}\sum_{k=1}^{U}\mathbb{E}\big[\mathbf{U}_k^T\mathbf{U}_k\big] \nonumber\\ 
+\Delta\alpha_b &= \frac{dB}{2},  \Delta\beta_b=\frac{1}{2}\sum_{i=1,j=1}^{B,S}\mu_{i,j}\mathbb{E}\big[(\mathbf{B}_i-\mathbf{S}_j)^T(\mathbf{B}_i-\mathbf{S}_j)\big] \nonumber\\
+\Delta\alpha_s &= \frac{dS}{2},  \Delta\beta_s=\frac{1}{2}\sum_{j=1}^{S}\mathbb{E}\big[(\mathbf{S}_j-\mathbf{w})^T(\mathbf{S}_j-\mathbf{w})\big] \nonumber\\
+\Delta\alpha_w &= \frac{d}{2},~  \Delta\beta_w=\frac{1}{2}\mathbb{E}\big[\mathbf{w}^T\mathbf{w}\big] 
 \end{align}
 
 
@@ -261,8 +263,7 @@ The parameter estimation method for the HBayes is summarized by Algorithm \ref{a
 
 \subsection{Prediction}
 
-In the recommender system, the task is to generate top $K$ products list for each user. So, given the user $u^*$,  it's natural to expose top M products based on the probability of the positive outcome. For the $m^{th}$ item, the probability is calculated as:
-
+In the recommender system, the task is to generate the top $K$ product list for each user.  Given the user $u^*$,  it's straightforward to expose top M products based on the probability of the positive outcomes. For the $m^{th}$ item, the probability is calculated as:
 \begin{equation}
 \label{prediction}
 \begin{split}
@@ -272,7 +273,6 @@ In the recommender system, the task is to generate top $K$ products list for eac
 \end{equation}
 
 \noindent where $h_{m}$ is a random variable with Gaussian distribution:
-
 \begin{align*}
  h_{m}  & =\bm{X}_m^T(\bm{B}_{b_m}+\bm{U}_{u^*})  \sim \mathcal{N}(h_{m};\mu_{m},\sigma^2_{m}) \\ 
 \mu_{m} & =\mathbb{E}\big[\bm{X}_m^T(\bm{B}_{b_m}+\bm{U}_{u^*})\big] \\ 
